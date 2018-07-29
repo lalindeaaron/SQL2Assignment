@@ -1,0 +1,102 @@
+import sqlalchemy
+import pandas as pd
+from sqlalchemy import create_engine
+
+df = pd.read_csv('https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data',sep=",",header=None)
+df.columns=['age','workclass','fnlwgt','education','educationNum','marital-status','occupation','relationship','race','sex','capital-gain','capital-loss','hours-per-week','native-country','income']
+engine = create_engine('sqlite:///mydata.db')
+df.to_sql('alchemynew', engine)
+
+result=engine.execute("select * from alchemynew Limit 5;")
+for row in result:
+    print("Results:",row)
+
+
+
+
+
+#Write two basic update queries
+
+#first we need to see the existing data for some row
+print("#Before Updating the data for gender")
+result=engine.execute("select * from alchemynew where fnlwgt=77516;")
+for row in result:
+    print("Results:",row)
+    
+
+print("#After Updating the data for gender Male to Female and educationNum 13 to 25")
+engine.execute("UPDATE alchemynew SET sex = 'Female' where fnlwgt=77516;")
+
+#second Update Query
+engine.execute("UPDATE alchemynew SET educationNum = 25 where fnlwgt=77516")
+
+result=engine.execute("select * from alchemynew where fnlwgt=77516;")
+for row in result:
+    print("Results:",row)
+
+
+
+#Write two delete queries
+
+
+#first we need to see the existing data for some row
+print("#Before delting the data")
+result=engine.execute("select * from alchemynew where fnlwgt in(77516,285294);")
+#result=engine.execute("select * from alchemynew where age=28 and education=' Bachelors' and sex=' Female' and race=' Black' and relationship=' Wife' and occupation=' Sales';")
+
+for row in result:
+    print("Results:",row)
+
+print("#After delting the data")
+engine.execute("delete from alchemynew where fnlwgt in(77516);")
+
+#second query
+engine.execute("delete from alchemynew where age=28 and education=' Bachelors' and sex=' Female' and race=' Black' and relationship=' Wife' and occupation=' Sales';")
+
+result=engine.execute("select * from alchemynew where fnlwgt in(77516,285294);")
+
+
+#result=engine.execute("select * from alchemynew where fnlwgt in(77516,338409);")
+for row in result:
+    print("Results:",row)
+
+
+
+
+#Write two filter queries
+
+result=engine.execute("select * from alchemynew where fnlwgt in(99928,124191) and sex=' Male';")
+
+#result=engine.execute("select * from alchemynew where fnlwgt in(77516,338409);")
+for row in result:
+    print("Results:",row)
+    
+
+#second filter condtions
+
+result=engine.execute("select * from alchemynew where sex=' Female' and fnlwgt LIKE '%89392%';")
+
+#result=engine.execute("select * from alchemynew where fnlwgt in(77516,338409);")
+for row in result:
+    print("Results:",row)
+
+
+##Write two function queries
+##Write two function queries
+
+
+result=engine.execute("select sum(age) from alchemynew;")
+
+#result=engine.execute("select * from alchemynew where fnlwgt in(77516,338409);")
+#print(result.value)
+for row in result:
+    print("Results:",row)
+    
+
+#second filter condtions
+
+result=engine.execute("select avg(age) from alchemynew where sex=' Male';")
+
+#result=engine.execute("select * from alchemynew where fnlwgt in(77516,338409);")
+for row in result:
+    print("Results:",row)
